@@ -6,12 +6,14 @@ namespace Laboratornaya1 {
   class GraphBuilder {
     private const double zeroValue = 0;
     private const double halfDivider = 2.0;
-    private const double minScale = 1;
+    private const double minScaleValue = 1;
     private const int axisThickness = 1;
     private const int curveThickness = 2;
     private const int startIndex = 0;
     private const int rootDotRadius = 6;
-    private const int rootDotBorder = 8;
+    private const int rootDotDiameter = 8;
+    private const int pointsPadding = 1;
+    private const int dividerForCenter = 2;
 
     public void Build(
         PictureBox pictureBox,
@@ -20,7 +22,15 @@ namespace Laboratornaya1 {
         double endPoint,
         FunctionCalculator functionCalculator)
     {
-      BuildInternal(pictureBox, formula, startPoint, endPoint, functionCalculator, false, zeroValue, zeroValue);
+      BuildInternal(
+          pictureBox,
+          formula,
+          startPoint,
+          endPoint,
+          functionCalculator,
+          false,
+          zeroValue,
+          zeroValue);
     }
 
     public void BuildWithRoot(
@@ -32,7 +42,15 @@ namespace Laboratornaya1 {
         double rootX,
         double rootY)
     {
-      BuildInternal(pictureBox, formula, startPoint, endPoint, functionCalculator, true, rootX, rootY);
+      BuildInternal(
+          pictureBox,
+          formula,
+          startPoint,
+          endPoint,
+          functionCalculator,
+          true,
+          rootX,
+          rootY);
     }
 
     private void BuildInternal(
@@ -52,17 +70,17 @@ namespace Laboratornaya1 {
       Brush backgroundBrush;
       Brush rootBrush;
       Pen rootPen;
-      int width;
-      int height;
+      int imageWidth;
+      int imageHeight;
       int centerX;
       int centerY;
-      double step;
-      double xValue;
-      double yValue;
+      double stepValue;
+      double currentX;
+      double currentY;
       double scaleX;
       double scaleY;
       double maxAbsY;
-      int i;
+      int pointIndex;
       int pointsCount;
       Point[] points;
       double pixelX;
@@ -73,64 +91,65 @@ namespace Laboratornaya1 {
       int rootDotLeft;
       int rootDotTop;
 
-      width = pictureBox.Width;
-      height = pictureBox.Height;
+      imageWidth = pictureBox.Width;
+      imageHeight = pictureBox.Height;
 
-      if (width <= startIndex || height <= startIndex)
+      if (imageWidth <= startIndex || imageHeight <= startIndex)
       {
         return;
       }
 
-      bitmap = new Bitmap(width, height);
+      bitmap = new Bitmap(imageWidth, imageHeight);
       graphics = Graphics.FromImage(bitmap);
       backgroundBrush = Brushes.White;
-      graphics.FillRectangle(backgroundBrush, startIndex, startIndex, width, height);
+      graphics.FillRectangle(backgroundBrush, startIndex, startIndex, imageWidth, imageHeight);
 
       axisPen = new Pen(Color.Black, axisThickness);
       curvePen = new Pen(Color.Blue, curveThickness);
       rootBrush = Brushes.Red;
       rootPen = new Pen(Color.DarkRed, axisThickness);
 
-      centerX = width / 2;
-      centerY = height / 2;
+      centerX = imageWidth / dividerForCenter;
+      centerY = imageHeight / dividerForCenter;
 
-      graphics.DrawLine(axisPen, startIndex, centerY, width, centerY);
-      graphics.DrawLine(axisPen, centerX, startIndex, centerX, height);
+      graphics.DrawLine(axisPen, startIndex, centerY, imageWidth, centerY);
+      graphics.DrawLine(axisPen, centerX, startIndex, centerX, imageHeight);
 
-      pointsCount = width;
+      pointsCount = imageWidth;
       points = new Point[pointsCount];
 
-      lastIndex = pointsCount - 1;
-      step = (endPoint - startPoint) / lastIndex;
+      lastIndex = pointsCount - pointsPadding;
+      stepValue = (endPoint - startPoint) / lastIndex;
       maxAbsY = zeroValue;
 
-      for (i = startIndex; i < pointsCount; ++i)
+      for (pointIndex = startIndex; pointIndex < pointsCount; ++pointIndex)
       {
-        xValue = startPoint + i * step;
-        yValue = functionCalculator.Calculate(formula, xValue);
-        if (Math.Abs(yValue) > maxAbsY)
+        currentX = startPoint + pointIndex * stepValue;
+        currentY = functionCalculator.Calculate(formula, currentX);
+
+        if (Math.Abs(currentY) > maxAbsY)
         {
-          maxAbsY = Math.Abs(yValue);
+          maxAbsY = Math.Abs(currentY);
         }
       }
 
       if (maxAbsY == zeroValue)
       {
-        maxAbsY = minScale;
+        maxAbsY = minScaleValue;
       }
 
-      scaleX = width / (endPoint - startPoint);
-      scaleY = (height / halfDivider) / maxAbsY;
+      scaleX = imageWidth / (endPoint - startPoint);
+      scaleY = (imageHeight / halfDivider) / maxAbsY;
 
-      for (i = startIndex; i < pointsCount; ++i)
+      for (pointIndex = startIndex; pointIndex < pointsCount; ++pointIndex)
       {
-        xValue = startPoint + i * step;
-        yValue = functionCalculator.Calculate(formula, xValue);
+        currentX = startPoint + pointIndex * stepValue;
+        currentY = functionCalculator.Calculate(formula, currentX);
 
-        pixelX = (xValue - startPoint) * scaleX;
-        pixelY = centerY - yValue * scaleY;
+        pixelX = (currentX - startPoint) * scaleX;
+        pixelY = centerY - currentY * scaleY;
 
-        points[i] = new Point((int)pixelX, (int)pixelY);
+        points[pointIndex] = new Point((int)pixelX, (int)pixelY);
       }
 
       graphics.DrawLines(curvePen, points);
@@ -146,8 +165,8 @@ namespace Laboratornaya1 {
         rootDotLeft = rootPixelX - rootDotRadius;
         rootDotTop = rootPixelY - rootDotRadius;
 
-        graphics.FillEllipse(rootBrush, rootDotLeft, rootDotTop, rootDotBorder, rootDotBorder);
-        graphics.DrawEllipse(rootPen, rootDotLeft, rootDotTop, rootDotBorder, rootDotBorder);
+        graphics.FillEllipse(rootBrush, rootDotLeft, rootDotTop, rootDotDiameter, rootDotDiameter);
+        graphics.DrawEllipse(rootPen, rootDotLeft, rootDotTop, rootDotDiameter, rootDotDiameter);
       }
 
       pictureBox.Image = bitmap;

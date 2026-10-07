@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace Laboratornaya1 {
   class InputValidator {
-    private const double minAccuracy = 0;
+    private const double minAccuracyValue = 0;
 
     public bool TryReadDouble(TextBox textBox, string fieldName, out double value)
     {
@@ -26,7 +26,7 @@ namespace Laboratornaya1 {
 
     public bool CheckAccuracy(double accuracy)
     {
-      if (accuracy <= minAccuracy)
+      if (accuracy <= minAccuracyValue)
       {
         MessageBox.Show(
             "Точность должна быть больше нуля.",

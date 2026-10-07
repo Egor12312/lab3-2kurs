@@ -4,49 +4,59 @@ using System.Text.RegularExpressions;
 
 namespace Laboratornaya1 {
   class FunctionCalculator {
-    public double Calculate(string formula, double xValue)
+    private const string powerPattern = @"([a-z0-9\.]+)\^([0-9]+)";
+    private const string multiplicationSign = "*";
+    private const string powerSign = "^";
+    private const string dotSign = ".";
+    private const string commaSign = ",";
+    private const string sinusName = "sin";
+    private const string cosinusName = "cos";
+    private const string sinusReplacement = "Sin";
+    private const string cosinusReplacement = "Cos";
+    private const string xLetter = "x";
+    private const string expressionColumnName = "expression";
+
+    public double Calculate(string formula, double coordinateValue)
     {
       string preparedFormula;
       DataTable dataTable;
       DataRow dataRow;
       double resultValue;
-      string xString;
+      string coordinateString;
 
       preparedFormula = formula.ToLower();
-      preparedFormula = preparedFormula.Replace("sin", "Sin");
-      preparedFormula = preparedFormula.Replace("cos", "Cos");
+      preparedFormula = preparedFormula.Replace(sinusName, sinusReplacement);
+      preparedFormula = preparedFormula.Replace(cosinusName, cosinusReplacement);
 
-      xString = xValue.ToString().Replace(",", ".");
-      preparedFormula = preparedFormula.Replace("x", xString);
+      coordinateString = coordinateValue.ToString().Replace(commaSign, dotSign);
+      preparedFormula = preparedFormula.Replace(xLetter, coordinateString);
 
       preparedFormula = ConvertPowers(preparedFormula);
 
       dataTable = new DataTable();
-      dataTable.Columns.Add("expression", typeof(string), preparedFormula);
+      dataTable.Columns.Add(expressionColumnName, typeof(string), preparedFormula);
       dataRow = dataTable.NewRow();
       dataTable.Rows.Add(dataRow);
-      resultValue = double.Parse((string)dataRow["expression"]);
+      resultValue = double.Parse((string)dataRow[expressionColumnName]);
 
       return resultValue;
     }
 
     private string ConvertPowers(string expression)
     {
-      string pattern;
       string result;
       Match match;
       string baseValue;
       string powerValue;
       int powerNumber;
       string replacement;
-      int i;
+      int multiplicationCounter;
 
-      pattern = @"([a-z0-9\.]+)\^([0-9]+)";
       result = expression;
 
       while (true)
       {
-        match = Regex.Match(result, pattern);
+        match = Regex.Match(result, powerPattern);
 
         if (match.Success == false)
         {
@@ -58,9 +68,9 @@ namespace Laboratornaya1 {
         powerNumber = int.Parse(powerValue);
         replacement = baseValue;
 
-        for (i = 1; i < powerNumber; ++i)
+        for (multiplicationCounter = 1; multiplicationCounter < powerNumber; ++multiplicationCounter)
         {
-          replacement = replacement + "*" + baseValue;
+          replacement = replacement + multiplicationSign + baseValue;
         }
 
         result = result.Substring(0, match.Index) + replacement + result.Substring(match.Index + match.Length);
