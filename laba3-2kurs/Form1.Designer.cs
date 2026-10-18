@@ -51,7 +51,7 @@
                 this.menuItemClear});
       this.menuStrip1.Location = new System.Drawing.Point(0, 0);
       this.menuStrip1.Name = "menuStrip1";
-      this.menuStrip1.Size = new System.Drawing.Size(600, 24);
+      this.menuStrip1.Size = new System.Drawing.Size(840, 24);
       this.menuStrip1.TabIndex = 0;
       this.menuStrip1.Text = "menuStrip1";
 
@@ -104,12 +104,12 @@
 
       this.textBoxF.Location = new System.Drawing.Point(70, 132);
       this.textBoxF.Name = "textBoxF";
-      this.textBoxF.Size = new System.Drawing.Size(200, 20);
+      this.textBoxF.Size = new System.Drawing.Size(300, 20);
       this.textBoxF.TabIndex = 4;
 
       this.buttonPlot.Location = new System.Drawing.Point(20, 165);
       this.buttonPlot.Name = "buttonPlot";
-      this.buttonPlot.Size = new System.Drawing.Size(250, 30);
+      this.buttonPlot.Size = new System.Drawing.Size(350, 30);
       this.buttonPlot.TabIndex = 5;
       this.buttonPlot.Text = "Построить график";
       this.buttonPlot.UseVisualStyleBackColor = true;
@@ -118,19 +118,19 @@
       this.pictureBoxGraph.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
       this.pictureBoxGraph.Location = new System.Drawing.Point(20, 205);
       this.pictureBoxGraph.Name = "pictureBoxGraph";
-      this.pictureBoxGraph.Size = new System.Drawing.Size(550, 300);
+      this.pictureBoxGraph.Size = new System.Drawing.Size(800, 500);
       this.pictureBoxGraph.TabIndex = 6;
       this.pictureBoxGraph.TabStop = false;
 
       this.labelResult.AutoSize = true;
-      this.labelResult.Location = new System.Drawing.Point(300, 45);
+      this.labelResult.Location = new System.Drawing.Point(400, 45);
       this.labelResult.Name = "labelResult";
       this.labelResult.Size = new System.Drawing.Size(0, 13);
       this.labelResult.TabIndex = 7;
 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(600, 530);
+      this.ClientSize = new System.Drawing.Size(840, 725);
       this.Controls.Add(this.labelResult);
       this.Controls.Add(this.pictureBoxGraph);
       this.Controls.Add(this.buttonPlot);
